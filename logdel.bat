@@ -1,6 +1,5 @@
 @echo off
-set ch=%cd%
-cd %ch%
+
 :: BatchGotAdmin Ben Gripka https://stackoverflow.com/questions/1894967/how-to-request-administrator-access-inside-a-batch-file
 :-------------------------------------
 REM  --> Check for permissions
@@ -29,6 +28,8 @@ if '%errorlevel%' NEQ '0' (
     pushd "%CD%"
     CD /D "%~dp0"
 :--------------------------------------  
+set ch=%cd%
+cd %ch%
 echo Clearing Event Logs Please wait...
 if exist log.txt (
   del log.txt
