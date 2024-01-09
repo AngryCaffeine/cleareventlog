@@ -1,5 +1,5 @@
 @echo off
-
+color 1f
 :: BatchGotAdmin Ben Gripka https://stackoverflow.com/questions/1894967/how-to-request-administrator-access-inside-a-batch-file
 :-------------------------------------
 REM  --> Check for permissions
@@ -30,6 +30,13 @@ if '%errorlevel%' NEQ '0' (
 :--------------------------------------  
 set ch=%cd%
 cd %ch%
+    call :MsgBox "Delete All Event Logs?"  "VBYesNo+VBQuestion" "Continue ?"
+    if errorlevel 7 (
+        goto _end
+    ) else if errorlevel 6 (
+        goto _strt
+    )
+:_strt
 echo Clearing Event Logs Please wait...
 if exist log.txt (
   del log.txt
@@ -41,5 +48,19 @@ for /f %%a in ('WEVTUTIL EL') do (
 !b! "%%a">>!log! 2>&1
 )
 cls
-echo complete! check log.txt for any errors
-timeout 30
+> tmp.vbs ECHO WScript.Echo^( "COMPLETE" ^& vbCrLf ^& "Check log.txt For Any Errors" ^)
+WSCRIPT.EXE tmp.vbs
+DEL tmp.vbs
+color
+endlocal
+goto :EOF
+:MsgBox
+    setlocal enableextensions
+    set "tempFile=%temp%\%~nx0.%random%%random%%random%vbs.tmp"
+    >"%tempFile%" echo(WScript.Quit msgBox("%~1",%~2,"%~3") & cscript //nologo //e:vbscript "%tempFile%"
+    set "exitCode=%errorlevel%" & del "%tempFile%" >nul 2>nul
+    endlocal & exit /b %exitCode%
+:_end
+color
+cls
+goto :EOF
