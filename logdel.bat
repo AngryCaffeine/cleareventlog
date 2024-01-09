@@ -30,7 +30,6 @@ if '%errorlevel%' NEQ '0' (
     CD /D "%~dp0"
 :--------------------------------------  
 echo Clearing Event Logs Please wait...
-cd C:\Users\CCLICK\Desktop\scripts\bat
 if exist log.txt (
   del log.txt
 )
